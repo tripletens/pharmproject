@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HealthInfoController;
+use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\DrugInteractionController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,6 +32,21 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+    // health info dashboard 
+    Route::get('/health-info', [HealthInfoController::class, 'index'])->name('healthinfo.index');
+    Route::post('/health-info/add-prescription', [HealthInfoController::class, 'save_medication'])->name('healthinfo.add_prescription');
+    Route::get('/health-info/delete-prescription/{id}', [HealthInfoController::class, 'save_medication'])->name('healthinfo.delete_prescription');
+    // end health info dashboard
+
+    // reminder dashboard
+    Route::get('/reminder', [ReminderController::class, 'index'])->name('reminder.index');
+    // end reminder dashboard
+
+    // drug interaction dashboard 
+    Route::get('/drug-interaction', [DrugInteractionController::class, 'index'])->name('druginteraction.index');
+    // end drug interaction dashboard 
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
