@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "embla-carousel": "^8.0.0-rc14",
-        "embla-carousel-autoplay": "^8.0.0-rc14"
+        "embla-carousel-autoplay": "^8.0.0-rc14",
+        "fullcalendar": "^6.1.10"
     }
 }

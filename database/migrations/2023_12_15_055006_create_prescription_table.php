@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->string('medication_frequency')->nullable();
             $table->string('user_id');
-            $table->string('code')->default(Str::random(8));
+            $table->string('code')->nullable();
             $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->timestamps();

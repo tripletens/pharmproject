@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Prescriptions;
-
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class HealthInfoController extends Controller
@@ -20,12 +20,6 @@ class HealthInfoController extends Controller
         // get all the prescriptions for the user 
         $user_id = Auth()->user()->id;
         $get_user_prescriptions = Prescriptions::where('user_id', $user_id)->simplePaginate(4);
-
-        $title = 'Delete User!';
-        $text = "Are you sure you want to delete?";
-
-        confirmDelete($title, $text);
-
        
         $format_dates = $get_user_prescriptions->map(function ($item) {
             // Assuming $item->start_date and $item->end_date are in Y-m-d format (e.g., "2023-08-02")
@@ -72,6 +66,7 @@ class HealthInfoController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'user_id' => Auth()->user()->id,
+            'code' => Str::random(8),
             'medication_frequency' => $request->medication_frequency,
         ]);
 
@@ -88,53 +83,80 @@ class HealthInfoController extends Controller
         return redirect()->back();
     }
 
-    public function update_prescription(Request $request, $id){
-        $prescription = Prescriptions::find($id);
-
-        if(!$prescription){
-            toastr()->error('Sorry Prescription could not be found');
-        }
+    public function update_prescription(Request $request){
+        $request->validateWithBag('prescriptionUpdate', [
+            'code' => ['required', 'string', 'max:255'],
+            'medication_name' => ['required', 'string', 'max:255'],
+            'medication_mode' => ['required', 'string', 'max:255'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date'],
+            'medication_frequency' => ['required', 'string', 'max:255']
+        ]);
+    
+        $code = $request->code;
+    
+        $prescription = Prescriptions::where('code', $code)->first();
+    
+        dd($prescription);
+        // if (!$prescription) {
+        //     toastr()->error('Sorry, Prescription could not be found');
+        //     return redirect()->back();
+        // }
         
-        $update_prescription = $prescription->update(
-            [
-                'medication_name' => $request->medication_name,
-                'medication_mode' => $request->medication_mode,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'user_id' => Auth()->user()->id,
-                'medication_frequency' => $request->medication_frequency,
-            ]
-        );
-
-        if(!$update_prescription){
-            $this->notification['message'] = 'Prescription could not be updated';
-            $this->notification['alert-type'] = 'error';
-        }
-
-        $this->notification['message'] = 'Prescription Updated Successfully';
-        $this->notification['alert-type'] = 'success';
-
-        return redirect()->back()->with($notification);
+        // $update_prescription = $prescription->update([
+        //     'medication_name' => $request->medication_name,
+        //     'medication_mode' => $request->medication_mode,
+        //     'start_date' => $request->start_date,
+        //     'end_date' => $request->end_date,
+        //     'user_id' => auth()->user()->id,
+        //     'medication_frequency' => $request->medication_frequency,
+        // ]);
+    
+        // if (!$update_prescription) {
+        //     toastr()->error('Prescription could not be updated');
+        //     return redirect()->back();
+        // }
+    
+        // toastr()->success('Prescription Updated Successfully');
+        // return redirect()->back();
     }
+    
 
-    public function remove_prescription($id){
-        $prescription = Prescriptions::find($id);
+    public function remove_prescription(Request $request){
+
+        $request->validateWithBag('prescriptionDeletion', [
+            'code' => ['required', 'string', 'max:255']
+        ]);
+
+        $code = $request->code;
+
+        $prescription = Prescriptions::where('code',$code);
 
         if(!$prescription){
-            $this->notification['message'] = 'Sorry Prescription could not be found';
-            $this->notification['alert-type'] = 'error';
+
+            toastr()->error('Sorry Prescription could not be found');
+    
+            return redirect()->back();
         }
+
 
         $delete_prescription = $prescription->delete();
 
+        // $title = 'Delete User!';
+        // $text = "Are you sure you want to delete?";
+
+        // confirmDelete($title, $text);
+
+
         if(!$delete_prescription){
-            $this->notification['message'] = 'Prescription could not be deleted';
-            $this->notification['alert-type'] = 'error';
+
+            toastr()->error('Prescription could not be deleted');
+    
+            return redirect()->back();
         }
 
-        $this->notification['message'] = 'Prescription Deleted Successfully';
-        $this->notification['alert-type'] = 'success';
-
-        return redirect()->back()->with($notification);
+        toastr()->success('Prescription Deleted Successfully');
+    
+        return redirect()->back();
     }
 }

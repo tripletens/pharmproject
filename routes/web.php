@@ -5,6 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HealthInfoController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\DrugInteractionController;
+use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\AppointmentController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +38,8 @@ Route::middleware('auth')->group(function () {
     // health info dashboard 
     Route::get('/health-info', [HealthInfoController::class, 'index'])->name('healthinfo.index');
     Route::post('/health-info/add-prescription', [HealthInfoController::class, 'save_medication'])->name('healthinfo.add_prescription');
-    Route::get('/health-info/delete-prescription/{id}', [HealthInfoController::class, 'save_medication'])->name('healthinfo.delete_prescription');
+    Route::put('/health-info/update-prescription', [HealthInfoController::class, 'update_prescription'])->name('healthinfo.update_prescription');
+    Route::delete('/health-info/delete-prescription', [HealthInfoController::class, 'remove_prescription'])->name('healthinfo.delete_prescription');
     // end health info dashboard
 
     // reminder dashboard
@@ -46,6 +49,19 @@ Route::middleware('auth')->group(function () {
     // drug interaction dashboard 
     Route::get('/drug-interaction', [DrugInteractionController::class, 'index'])->name('druginteraction.index');
     // end drug interaction dashboard 
+
+
+    // chat bot dashboard 
+    Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot.index');
+    Route::post('/get-bot-response', [ChatbotController::class, 'getBotResponse'])->name('chatbot.response');
+    // end chat bot dashboard
+
+    // start appointment dashboard 
+    Route::get('/appointment', [AppointmentController::class, 'index'])->name('appointment.index');
+
+    Route::post('/save-appointment', [AppointmentController::class, 'save_appointment'])->name('appointment.save_appointment');
+    
+    // end appointment dashboard
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

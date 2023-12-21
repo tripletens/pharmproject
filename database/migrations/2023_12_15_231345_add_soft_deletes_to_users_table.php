@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // drop the deleted_at column for soft deletes 
-            $this->dropColumn(['deleted_at']);
+            // $this->dropSoftDeletes();
         });
     }
 };
