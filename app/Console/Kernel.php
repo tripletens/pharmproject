@@ -13,6 +13,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            $userId = auth()->check() ? auth()->user()->id : null;
+
+            // If there's a user authenticated, run the command with the user ID
+            if ($userId) {
+                Artisan::call('app:medication-email-cron-job', ['user_id' => $userId]);
+            }
+        })->dailyAt('7:00');
     }
 
     /**

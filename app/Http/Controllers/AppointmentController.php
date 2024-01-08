@@ -5,11 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Appointments;
+
+use App\Mail\AppointmentMail;
+
 use Illuminate\Support\Str;
+
+use Illuminate\Support\Facades\Mail;
+
+use Twilio\Rest\Client;
 
 class AppointmentController extends Controller
 {
     // fetch appointment page 
+
+    public function __construct(){
+    
+    }
 
     public function index(){
         return view('appointment');
@@ -38,6 +49,38 @@ class AppointmentController extends Controller
         ]);
 
 
+        $appointment_details = [
+            'patient_name' => $request->patient_name,
+            'patient_email' => $request->patient_email,
+            'patient_appointment_time' => $request->patient_appointment_time,
+            'patient_appointment_date' => $request->patient_appointment_date,
+            'patient_subject' => $request->patient_subject,
+        ];
+
+        //  send email here 
+
+        Mail::to($request->user())->send(new AppointmentMail($appointment_details));
+
+
+        $receiver = Auth()->user()->phone; // Replace with the actual recipient's phone number
+
+        $message = 'Hello ' . auth()->user()->name . 
+            ', Your ' . $request->patient_subject . ' appointment with the doctor has been scheduled for ' . date('l jS F Y g:ia', strtotime($request->patient_appointment_date . ' ' . $request->patient_appointment_time ));
+
+        // Create an instance of TwilioServiceController
+        $twilioController = new TwilioServiceController();
+        
+        // Call the sendSms method on the instance
+        $sendSms = $twilioController->send_sms($receiver, $message);
+
+        if(!$sendSms){
+            toastr()->error('SMS could not be sent, Try again later');
+        }
+
+        toastr()->info('SMS has been sent successfully.');
+
+        // send SMS here too 
+
         if(!$prescription){
         
             toastr()->error('Appointment could not be booked, Try again later');
@@ -47,7 +90,8 @@ class AppointmentController extends Controller
 
         toastr()->success('Appointment Booked Successfully');
 
+        toastr()->success('Appointment Confirmation Email sent successfully');
+
         return redirect()->back();
     }
-
 }

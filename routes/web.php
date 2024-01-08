@@ -7,7 +7,7 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\DrugInteractionController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\AppointmentController;
-
+use App\Http\Controllers\DrugController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
     // health info dashboard 
     Route::get('/health-info', [HealthInfoController::class, 'index'])->name('healthinfo.index');
     Route::post('/health-info/add-prescription', [HealthInfoController::class, 'save_medication'])->name('healthinfo.add_prescription');
+    Route::post('/health-info/add-health-metrics', [HealthInfoController::class, 'add_health_metrics'])->name('healthinfo.add_health_metrics');
+    
     Route::put('/health-info/update-prescription', [HealthInfoController::class, 'update_prescription'])->name('healthinfo.update_prescription');
     Route::delete('/health-info/delete-prescription', [HealthInfoController::class, 'remove_prescription'])->name('healthinfo.delete_prescription');
     // end health info dashboard
@@ -48,6 +50,9 @@ Route::middleware('auth')->group(function () {
 
     // drug interaction dashboard 
     Route::get('/drug-interaction', [DrugInteractionController::class, 'index'])->name('druginteraction.index');
+    
+    Route::get('/drugs/search', [DrugController::class, 'search'])->name('drugs.search');
+
     // end drug interaction dashboard 
 
 

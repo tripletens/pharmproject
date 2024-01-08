@@ -17,6 +17,19 @@
 
     </div>
 
+    <div class="py-12">
+
+        <div class="grid lg:grid-cols-2 md:grid-cols-2 ">
+            <!-- First Div -->
+            {{-- <x-health-metrics :healthmetrics="$healthmetrics"></x-health-metrics> --}}
+
+            <!-- Second Div -->
+            <x-add-health-metrics></x-add-health-metrics>
+
+            <x-health-metrics :healthmetrics="$healthmetrics"></x-health-metrics>
+        </div>
+
+    </div>
 
 
 

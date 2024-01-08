@@ -16,12 +16,17 @@
                     <p class="p-2 ring-1 ring-white rounded-2xl m-2 ">
                         {{ implode(' ', explode('_', ucwords($value->medication_frequency))) }}</p>
 
+                        @if ($value->daily_time)  
+                            <p class="p-2 ring-1 ring-white rounded-2xl m-2 ">
+                            {{ $value->daily_time ? implode(' ', explode('_', ucwords($value->daily_time))) : ""}}</p>
+                        @endif
+    
                     <div class="ml-auto">
-                        <button class="bg-sky-500 hover:bg-sky-800 text-white p-3 rounded-lg " x-data="{{ $value->code }}"
+                        {{-- <button class="bg-sky-500 hover:bg-sky-800 text-white p-3 rounded-lg " x-data="{{ $value->code }}"
                             x-on:click.prevent="$dispatch('open-modal', 'confirm-prescription-update{{ $value->code }}')"
                             title="Edit {{ ucwords($value->medication_name) }}">
                             <img src="{{ asset('./icons/edit_square.svg') }}" />
-                        </button>
+                        </button> --}}
 
                         <x-modal name="confirm-prescription-update{{ $value->code }}" :show="$errors->prescriptionUpdate->isNotEmpty()" focusable>
                            

@@ -19,5 +19,5 @@ class Prescriptions extends Model
     }
 
 
-    public $fillable = ['medication_name','user_id','medication_mode','code', 'start_date', 'end_date', 'medication_frequency'];
+    public $fillable = ['medication_name','user_id','medication_mode','code', 'start_date', 'end_date', 'medication_frequency','daily_time'];
 }
