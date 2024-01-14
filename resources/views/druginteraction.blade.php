@@ -5,6 +5,26 @@
         </h2>
     </x-slot> -->
 
+    <style type="text/css">
+        .click_feature {
+            cursor:pointer;
+            margin:10px;
+            padding:20px;
+            border: 1px solid #ffffff;
+            border-radius: 15px;
+        }
+
+        .click_feature:hover{
+            cursor:pointer;
+            margin:10px;
+            padding:20px;
+            background: #000000;
+            border: 1px solid #ffffff;
+            border-radius: 15px;
+            color: #ffffff;
+        }
+    </style>
+
     <div class="py-12 min-w-full">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -13,14 +33,16 @@
                 </div>
             </div>
 
-            <div class="bg-teal-800 text-white text-lg m-3 rounded-lg">
-                <p class="p-3">
-                    @if (session('message'))
-                        {{ session('message') }}
-                    @endif
-                </p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            @if (session('message'))
+                <div class="bg-teal-800 text-white text-lg m-3 rounded-lg">
+                    <p class="p-3">
+
+                        {!! session('message')!!}
+
+                    </p>
+                </div>
+            @endif
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 my-4 w-full">
                 <div class="w-full">
                     <!-- Your content for the first column (full width) -->
                     @if (count($drugInteraction))
@@ -29,34 +51,33 @@
                             <div class="bg-slate-800 my-4 p-1 text-white rounded-lg text-start w-full">
                                 <div class="flex flex-row h-100">
                                     <h3 class="text-start text-white p-2 justify-center m-1">
-                                        {{ ucwords($value->name) .' ' . $value->id }}</h3>
+                                        {{ ucwords($value->name) }}
+                                    </h3>
 
-                        
                                     <div class="ml-auto">
-                                        <button x-data="{{ $value->id }}"
+                                        <button x-data="{{ $value->name }}"
                                             x-on:click.prevent="$dispatch('open-modal', 'confirm-drug-deletion{{ $value->name }}')"
                                             class="bg-red-500 hover:bg-red-800 text-white p-3 rounded-lg "
-                                            title="Delete {{ ucwords($value->name) }}">
+                                            title="Delete {{ ucwords($value->medication_name) }}">
                                             <img src="{{ asset('./icons/delete.svg') }}" />
                                         </button>
 
-                                        <x-modal name="confirm-drug-deletion{{ $value->name }}"
-                                            :show="$errors->id->isNotEmpty()" focusable>
-                                            <form method="post" action="{{ route('drugs.delete') }}"
-                                                class="p-6">
+                                        <x-modal name="confirm-drug-deletion{{ $value->name }}" :show="$errors->drugDeletion->isNotEmpty()"
+                                            focusable>
+                                            <form method="post" action="{{ route('drugs.delete') }}" class="p-6">
                                                 @csrf
                                                 @method('delete')
 
                                                 <h2 class="text-lg font-medium text-gray-900">
-                                                    {{ __('Are you sure you want to delete your Drug ' . ucwords($value->name) . '?') }}
+                                                    {{ __('Are you sure you want to delete this drug - ' . ucwords($value->name) . ' ?') }}
                                                 </h2>
 
-                                                {{-- <div class="mt-6">
-                                                    <input id="code" name="code" type="hidden"
+                                                <div class="mt-6">
+                                                    <input id="name" name="name" type="hidden"
                                                         class="mt-1 block w-3/4 text-teal-800"
-                                                        hidden value="{{ $value->id }}" />
-                                                    <x-input-error :messages="$errors->drugDeletion->get('id')" class="mt-2" />
-                                                </div> --}}
+                                                        value="{{ $value->name }}" />
+                                                    <x-input-error :messages="$errors->prescriptionDeletion->get('name')" class="mt-2" />
+                                                </div>
 
                                                 <div class="mt-6 flex justify-end">
                                                     <x-secondary-button x-on:click="$dispatch('close')">
@@ -70,7 +91,6 @@
                                             </form>
                                         </x-modal>
                                     </div>
-
                                 </div>
                             </div>
                         @endforeach
@@ -78,9 +98,8 @@
                         <p> Sorry you don't have any drugs available</p>
                     @endif
                 </div>
-                <div class="w-full bg-teal-800 p-4">
+                <div class="w-full bg-teal-800 p-4 rounded-lg">
                     <!-- Drug Search Form -->
-
                     <form method="POST" action="{{ route('drugs.add') }}">
                         @csrf
                         <div class="w-full">
@@ -91,13 +110,13 @@
                                 Item</button>
                         </div>
                     </form>
+
                     <!-- Display Search Results -->
                     <ul id="searchResults"></ul>
                 </div>
             </div>
         </div>
     </div>
-
 
     <!-- resources/views/drug-interaction.blade.php -->
     @section('scripts')
@@ -146,13 +165,13 @@
                                 data.forEach(drug => {
                                     const listItem = document.createElement('li');
                                     listItem.textContent = drug
-                                        .name; // Use drug name as selected drug
-                                    listItem.classList.add('text-white');
+                                    .name; // Use drug name as selected drug
+                                    listItem.classList.add('text-white', 'click_feature');
                                     listItem.addEventListener('click', function() {
                                         searchInput.value = drug
-                                            .name; // Set search input value on click
+                                        .name; // Set search input value on click
                                         searchResults.innerHTML =
-                                            ''; // Clear search results
+                                        ''; // Clear search results
                                     });
                                     searchResults.appendChild(listItem);
                                 });
@@ -176,7 +195,7 @@
                             body: JSON.stringify({
                                 drug: drug,
                                 otherDrugs: Array.from(leftList.children).map(item => item.textContent
-                                    .trim()),
+                                .trim()),
                             }),
                         })
                         .then(response => response.json())
@@ -191,7 +210,4 @@
             });
         </script>
     @endsection
-
-
-
 </x-app-layout>

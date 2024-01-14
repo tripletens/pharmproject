@@ -15,7 +15,7 @@
             @if(session('result'))
                 <div class="m-6 p-3 text-2xl rounded-lg bg-teal-800 text-white h-auto ">
                     <h3 class="text-center p-6 text-start">
-                        {{ session('result') }} 
+                        {!! session('result') !!} 
                     </h3>
                 </div>
             @endif
@@ -47,7 +47,7 @@
                             
                                                 <div class="relative overflow-hidden transition-all max-h-0 duration-700" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
                                                     <div class="p-6">
-                                                        <p>{{$value->content}}</p>
+                                                        <p>{!!$value->content!!}</p>
                                                     </div>
                                                 </div>
                                             </li>

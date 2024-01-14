@@ -136,7 +136,7 @@ class ChatbotController extends Controller
 
         // return ($fetch_user_chats);
 
-        return back()->with(['chat_history' => $fetch_user_chats,'result' => $content ]);
+        return back()->with(['chat_history' => $fetch_user_chats,'result' => nl2br($content) ]);
     }
 
     public function saveAiChat(array $data){
@@ -172,7 +172,7 @@ class ChatbotController extends Controller
                 'system_fingerprint' => $system_fingerprint,
                 'index' => $index,
                 'role' => $role,
-                'content' => $content, 
+                'content' => nl2br($content), // use {!! $content_goes_here !!} to display it 
                 'logprobs' => $logprobs,
                 'finish_reason' => $finish_reason,
                 'search_term' => $search_term

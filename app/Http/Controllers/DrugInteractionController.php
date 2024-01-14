@@ -20,7 +20,8 @@ class DrugInteractionController extends Controller
     }
 
 
-    public function saveDrug(Request $request){
+    public function saveDrug(Request $request)
+    {
         $request->validate([
             'search_input' => ['required', 'string', 'max:255']
         ]);
@@ -33,52 +34,42 @@ class DrugInteractionController extends Controller
 
         $users_drugs = DrugInteraction::where('user_id', $user_id)->select('name')->get()->toArray();
 
-      
-        // check if the item already exist in database 
+        // check if the item already exists in the database 
 
-        
         $drug_exists = DrugInteraction::where('user_id', $user_id)->select('name')->where('name', $search_input)->count();
 
-        // return $drug_exists;
-
-        if($drug_exists > 0){
+        if ($drug_exists > 0) {
             toastr()->error('Drug already exists');
             return redirect()->back();
         }
 
-        $nameArray = array_map(function($item) {
+        $nameArray = array_map(function ($item) {
             return $item['name'];
-        }, $users_drugs);        
+        }, $users_drugs);
 
         array_push($nameArray, $search_input);
-        
 
         // pass the drug array to the expert for checks 
-        // return $search_input;
-
         $drug_interaction_response = $this->checkDrugInteraction($nameArray);
 
-        // return $drug_interaction_response;
-        
         $content = $drug_interaction_response['choices'][0]['message']['content'];
 
-        // return $content;
+        // Create formatted content with HTML line breaks
+        $formattedContent = nl2br($content);
 
         $drug_interaction = DrugInteraction::create([
             'user_id' => $user_id,
-            'name' =>  $search_input
+            'name' => $search_input
         ]);
 
-        if(!$drug_interaction){
-        
+        if (!$drug_interaction) {
             toastr()->error('Drug could not be added, Try again later');
-    
             return redirect()->back();
         }
 
         toastr()->success('Drug Added Successfully');
 
-        return redirect()->back()->with(['message' => $content]);
+        return redirect()->back()->with(['message' => $formattedContent]);
     }
 
    
@@ -116,12 +107,12 @@ class DrugInteractionController extends Controller
     public function deleteDrug(Request $request){
         
         $request->validateWithBag('drugDeletion', [
-            'id' => ['required', 'string', 'max:255']
+            'name' => ['required', 'string', 'max:255']
         ]);
 
-        $id = $request->id;
+        $name = $request->name;
 
-        $drug = DrugInteraction::find($id);
+        $drug = DrugInteraction::where('name',$name)->first();
 
         if(!$drug){
 

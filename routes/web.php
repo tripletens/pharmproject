@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/drugs/add', [DrugInteractionController::class, 'saveDrug'])->name('drugs.add');
 
-    Route::post('/drugs/delete', [DrugInteractionController::class, 'deleteDrug'])->name('drugs.delete');
+    Route::delete('/drugs/delete', [DrugInteractionController::class, 'deleteDrug'])->name('drugs.delete');
 
     // end drug interaction dashboard 
 
