@@ -28,7 +28,7 @@
                             <img src="{{ asset('./icons/edit_square.svg') }}" />
                         </button> --}}
 
-                        <x-modal name="confirm-prescription-update{{ $value->code }}" :show="$errors->prescriptionUpdate->isNotEmpty()" focusable>
+                        {{-- <x-modal name="confirm-prescription-update{{ $value->code }}" :show="$errors->prescriptionUpdate->isNotEmpty()" focusable>
                            
                             <form method="post" action="{{ route('healthinfo.update_prescription') }}" class="p-6">
                                 @csrf
@@ -55,9 +55,9 @@
                                 </div>
 
                                 <x-input-error :messages="$errors->prescriptionUpdate->get('medication_name')" class="mt-2 text-end" />
-                                {{-- medication_name, medication_mode, start_date, end_date, medication_frequency --}}
+                                {{-- medication_name, medication_mode, start_date, end_date, medication_frequency 
 
-                                {{-- mode of medication --}}
+                                
                                 <div class="flex flex-row justify-start my-3">
                                     <x-input-label for="medication_mode" class="w-full text-teal-800 py-3 text-start"
                                         :value="__('Mode of Medication:')" />
@@ -83,7 +83,7 @@
                                 </div>
                                 <x-input-error :messages="$errors->get('medication_mode')" class="mt-2 text-end" />
 
-                                {{-- Start Date  --}}
+                                {{-- Start Date  
                                 <div class="flex flex-row justify-start my-3">
                                     <x-input-label for="start_date" class="w-full text-teal-800 py-3 text-start"
                                         :value="__('Start Date:')" />
@@ -91,7 +91,7 @@
                                         name="start_date" required autofocus autocomplete="start_date" />
                                 </div>
                                 <x-input-error :messages="$errors->prescriptionUpdate->get('start_date')" class="mt-2 text-end" />
-                                {{-- end date  --}}
+                                {{-- end date  
 
                                 <div class="flex flex-row justify-start my-3">
                                     <x-input-label for="end_date" class="w-full text-teal-800 py-3 text-start"
@@ -135,7 +135,7 @@
                                     </x-danger-button>
                                 </div>
                             </form>
-                        </x-modal>
+                        </x-modal> --}}
 
                         <button x-data="{{ $value->code }}"
                             x-on:click.prevent="$dispatch('open-modal', 'confirm-prescription-deletion{{ $value->code }}')"
@@ -154,7 +154,6 @@
                                 </h2>
 
                                 <div class="mt-6">
-                                    {{-- <p>{{$value->code}}</p> --}}
                                     <input id="code" name="code" type="hidden"
                                         class="mt-1 block w-3/4 text-teal-800" value="{{ $value->code }}" />
                                     <x-input-error :messages="$errors->prescriptionDeletion->get('code')" class="mt-2" />

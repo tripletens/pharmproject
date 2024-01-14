@@ -17,6 +17,19 @@
 
     </div>
 
+    {{-- 
+        <VirtualHost *:80>
+            ServerName your-domain.com
+            DocumentRoot /var/www/html/public
+
+            <Directory /var/www/html/public>
+                Options Indexes FollowSymLinks
+                AllowOverride All
+                Require all granted
+            </Directory>
+        </VirtualHost> 
+    --}}
+
     <div class="py-12">
 
         <div class="grid lg:grid-cols-2 md:grid-cols-2 ">
@@ -30,7 +43,6 @@
         </div>
 
     </div>
-
 
 
 </x-app-layout>

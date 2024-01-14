@@ -66,6 +66,9 @@ class MedicationEmailCronJob extends Command
 
             $prescription->name = $user_name ?? null;
             
+            Mail::to($user->email)->later($scheduledTime, new MedicationEmail($prescription));
+
+            
             // Check if today is within the prescription period
             if (now()->between($start_date, $end_date)) {
                 // If daily_time is set, check if it's time to send the email
@@ -117,6 +120,18 @@ class MedicationEmailCronJob extends Command
         if ($user) {
             $scheduledTime = now()->addHours($hoursLater);
             Mail::to($user->email)->later($scheduledTime, new MedicationEmail($prescription));
+
+            $receiver = $user->phone; // Replace with the actual recipient's phone number
+
+            $message = 'Hello ' . $user->name . 
+                ', This is a reminder to take your medication ' . $medication_name . ' \n It started on ' . $start_date . ' and is expected to end on ' . $end_date ;
+
+            // Create an instance of TwilioServiceController
+            $twilioController = new TwilioServiceController();
+            
+            // Call the sendSms method on the instance
+            $sendSms = $twilioController->send_sms($receiver, $message);
+
         } else {
             $this->error('User not found.'); // Handle the case where the user is not found
         }

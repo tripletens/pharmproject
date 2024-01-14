@@ -13,35 +13,91 @@
                 </div>
             </div>
 
+            <div class="bg-teal-800 text-white text-lg m-3 rounded-lg">
+                <p class="p-3">
+                    @if (session('message'))
+                        {{ session('message') }}
+                    @endif
+                </p>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 <div class="w-full">
                     <!-- Your content for the first column (full width) -->
-                    @if(count($drugInteraction))
-                    <ul class="flex flex-col w-full">
-                        @foreach($drugInteeraction as $drug)
-                            <li> {{ $drug->name }}</li>
-                        @endforeach 
-                    </ul>
+                    @if (count($drugInteraction))
+
+                        @foreach ($drugInteraction as $value)
+                            <div class="bg-slate-800 my-4 p-1 text-white rounded-lg text-start w-full">
+                                <div class="flex flex-row h-100">
+                                    <h3 class="text-start text-white p-2 justify-center m-1">
+                                        {{ ucwords($value->name) .' ' . $value->id }}</h3>
+
+                        
+                                    <div class="ml-auto">
+                                        <button x-data="{{ $value->id }}"
+                                            x-on:click.prevent="$dispatch('open-modal', 'confirm-drug-deletion{{ $value->name }}')"
+                                            class="bg-red-500 hover:bg-red-800 text-white p-3 rounded-lg "
+                                            title="Delete {{ ucwords($value->name) }}">
+                                            <img src="{{ asset('./icons/delete.svg') }}" />
+                                        </button>
+
+                                        <x-modal name="confirm-drug-deletion{{ $value->name }}"
+                                            :show="$errors->id->isNotEmpty()" focusable>
+                                            <form method="post" action="{{ route('drugs.delete') }}"
+                                                class="p-6">
+                                                @csrf
+                                                @method('delete')
+
+                                                <h2 class="text-lg font-medium text-gray-900">
+                                                    {{ __('Are you sure you want to delete your Drug ' . ucwords($value->name) . '?') }}
+                                                </h2>
+
+                                                {{-- <div class="mt-6">
+                                                    <input id="code" name="code" type="hidden"
+                                                        class="mt-1 block w-3/4 text-teal-800"
+                                                        hidden value="{{ $value->id }}" />
+                                                    <x-input-error :messages="$errors->drugDeletion->get('id')" class="mt-2" />
+                                                </div> --}}
+
+                                                <div class="mt-6 flex justify-end">
+                                                    <x-secondary-button x-on:click="$dispatch('close')">
+                                                        {{ __('Cancel') }}
+                                                    </x-secondary-button>
+
+                                                    <x-danger-button class="ms-3">
+                                                        {{ __('Delete Drug') }}
+                                                    </x-danger-button>
+                                                </div>
+                                            </form>
+                                        </x-modal>
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endforeach
                     @else
-                    <p> Sorry you don't have any drugs available</p>
+                        <p> Sorry you don't have any drugs available</p>
                     @endif
                 </div>
                 <div class="w-full bg-teal-800 p-4">
                     <!-- Drug Search Form -->
 
-                    <div class="w-full">
-                        <input type="text" id="searchInput" class="rounded-lg" placeholder="Search for drugs..." />
-                        <button id="addItemButton"
-                            class="rounded-lg bg-white p-3 hover:bg-black hover:ring-2 hover-ring-white  hover:text-white text-teal-800">Add
-                            Item</button>
-                    </div>
-
+                    <form method="POST" action="{{ route('drugs.add') }}">
+                        @csrf
+                        <div class="w-full">
+                            <input type="text" name="search_input" id="searchInput" class="rounded-lg"
+                                placeholder="Search for drugs..." />
+                            <button type="submit" id="addItemButton"
+                                class="rounded-lg bg-white p-3 hover:bg-black hover:ring-2 hover-ring-white  hover:text-white text-teal-800">Add
+                                Item</button>
+                        </div>
+                    </form>
                     <!-- Display Search Results -->
                     <ul id="searchResults"></ul>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- resources/views/drug-interaction.blade.php -->
     @section('scripts')
@@ -120,7 +176,7 @@
                             body: JSON.stringify({
                                 drug: drug,
                                 otherDrugs: Array.from(leftList.children).map(item => item.textContent
-                                .trim()),
+                                    .trim()),
                             }),
                         })
                         .then(response => response.json())
