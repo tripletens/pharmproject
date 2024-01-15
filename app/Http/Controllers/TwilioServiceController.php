@@ -29,8 +29,6 @@ class TwilioServiceController extends Controller
     }
 
     public function send_sms($receiver, $message){
-        // $receiverNumber = "RECEIVER_NUMBER";
-        // $message = "This is testing from CodeSolutionStuff.com";
   
         try {
   
@@ -49,8 +47,4 @@ class TwilioServiceController extends Controller
             dd("Error: ". $e->getMessage());
         }
     }
-
-    // TWILIO_SID="AC73a428cc1ee42c873d80f1cc00936ffe"
-    // TWILIO_AUTH_TOKEN="c93b16122ae32d9a1d654dfbe9b1d807"
-    // TWILIO_PHONE_NUMBER="+12058394784"
 }

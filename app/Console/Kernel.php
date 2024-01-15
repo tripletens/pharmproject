@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
             if ($userId) {
                 Artisan::call('app:medication-email-cron-job', ['user_id' => $userId]);
             }
-        })->dailyAt('7:00');
+        })->dailyAt('07:00');
     }
 
     /**
