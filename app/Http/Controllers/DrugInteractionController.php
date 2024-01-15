@@ -123,6 +123,25 @@ class DrugInteractionController extends Controller
 
         $delete_drug = $drug->delete();
 
+        // get loggedin user 
+
+        $user_id = Auth()->user()->id;
+
+        // check for the drug for the 
+        $users_drugs = DrugInteraction::where('user_id', $user_id)->select('name')->get()->toArray();
+
+        $nameArray = array_map(function ($item) {
+            return $item['name'];
+        }, $users_drugs);
+
+        // pass the drug array to the expert for checks 
+        $drug_interaction_response = $this->checkDrugInteraction($nameArray);
+
+        $content = $drug_interaction_response['choices'][0]['message']['content'];
+
+        // Create formatted content with HTML line breaks
+        $formattedContent = nl2br($content);
+        
         if(!$delete_drug){
 
             toastr()->error('Drug could not be deleted');
@@ -132,7 +151,7 @@ class DrugInteractionController extends Controller
 
         toastr()->success('Drug Deleted Successfully');
     
-        return redirect()->back();
+        return redirect()->back()->with(['message' => $formattedContent]);
     }
 
 }

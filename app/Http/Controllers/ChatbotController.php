@@ -35,15 +35,15 @@ class ChatbotController extends Controller
             "messages"=> [
                 [
                   "role"=> "system",
-                  "content"=> "You are an pharmaceutical expert with several years of experience. You are to give detailed explanation to users."
+                  "content"=> "You are an pharmaceutical expert with several years of experience. You are to give detailed explanation to users. Summarise it into 300 words. "
                 ],
                 [
                   "role"=> "user",
                   "content"=> $userInput
                 ]
             ],
-            'temperature' => 0.3,
-            'max_tokens' => 150,
+            'temperature' => 0.2,
+            'max_tokens' => 300,
         ]);
     
         // Debugging: Log the response
